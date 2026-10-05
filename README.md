@@ -1,1 +1,15 @@
-# Uni-Bike
+# Uni-Bike - Plataforma de Mobilidade Corporativa (e-Bikes)
+
+Projeto desenvolvido no âmbito da unidade curricular de **Análise de Sistemas** (2026/2027).
+
+## 👥 Equipa de Desenvolvimento
+* **Guilherme Antunes** — 125039 (Scrum Master)
+* **Nome do Colega 2** — Nº Mecanográfico (Product Owner)
+* **Nome do Colega 3** — Nº Mecanográfico (Developer)
+
+## 📌 Resumo do Projeto
+O **Uni-Bike** é uma plataforma B2B de gestão de frotas partilhadas de bicicletas elétricas conectadas por IoT, desenhada para parques empresariais e polos industriais, promovendo a mobilidade suave, a otimização de frotas e a medição de métricas de sustentabilidade (ESG).
+
+## 🔗 Ligações Úteis
+* **Jira (Scrum Board):** [link]
+* **Documentação:** Pasta `/docs`
