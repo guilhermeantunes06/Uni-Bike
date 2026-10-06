@@ -11,5 +11,5 @@ Projeto desenvolvido no âmbito da unidade curricular de **Análise de Sistemas*
 O **Uni-Bike** é uma plataforma B2B de gestão de frotas partilhadas de bicicletas elétricas conectadas por IoT, desenhada para parques empresariais e polos industriais, promovendo a mobilidade suave, a otimização de frotas e a medição de métricas de sustentabilidade (ESG).
 
 ## 🔗 Ligações Úteis
-* **Jira (Scrum Board):** [link]
+* **Jira (Scrum Board):** [https://uni-bike.atlassian.net/jira/software/projects/SCRUM/boards/1?filter=&groupBy=none&atlOrigin=eyJpIjoiZmRmMDEzMzQ2MzAyNDAwNzliYjJlMmRmZDdjNWI0NzUiLCJwIjoiaiJ9]
 * **Documentação:** Pasta `/docs`
