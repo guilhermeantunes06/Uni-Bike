@@ -5,7 +5,7 @@ Projeto desenvolvido no âmbito da unidade curricular de **Análise de Sistemas*
 ## 👥 Equipa de Desenvolvimento
 * **Guilherme Antunes** — 125039 (Scrum Master)
 * **César Carvalho** — 126418 (Product Owner)
-* **Leonardo Silva** — 124823 
+* **Leonardo Silva** — 124823 (Colaborator)
 
 ## 📌 Resumo do Projeto
 O **Uni-Bike** é uma plataforma B2B de gestão de frotas partilhadas de bicicletas elétricas conectadas por IoT, desenhada para parques empresariais e polos industriais, promovendo a mobilidade suave, a otimização de frotas e a medição de métricas de sustentabilidade (ESG).
