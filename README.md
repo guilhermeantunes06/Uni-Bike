@@ -12,4 +12,4 @@ O **Uni-Bike** é uma plataforma B2B de gestão de frotas partilhadas de bicicle
 
 ## 🔗 Ligações Úteis
 * **Jira (Scrum Board):** [https://uni-bike.atlassian.net/jira/software/projects/SCRUM/boards/1?filter=&groupBy=none&atlOrigin=eyJpIjoiZmRmMDEzMzQ2MzAyNDAwNzliYjJlMmRmZDdjNWI0NzUiLCJwIjoiaiJ9]
-* **Documentação:** Pasta `/docs`
+* **Documentação:** Pasta `/assets
