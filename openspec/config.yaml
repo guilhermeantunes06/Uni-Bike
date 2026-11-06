@@ -1,0 +1,67 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
+
+# Configuração OpenSpec para o projeto Uni-Bike (AS 2026/2027)
+
+context: |
+  O Uni-Bike é uma plataforma ciber-física integrada B2B para gestão partilhada de frotas de
+  bicicletas elétricas (e-bikes) em campus universitários e parques tecnológicos.
+  
+  Arquitetura e Restrições Técnicas:
+  - Aplicação Móvel para utilizador final (Android/iOS cross-platform).
+  - Consola Web de gestão operacional e analítica em React/Next.js.
+  - Backend na Cloud com arquitetura de serviços/APIs RESTful seguras (HTTPS/TLS 1.3).
+  - Camada IoT ciber-física: módulos IoT com GPS nas e-bikes comunicando via MQTT com TLS.
+  - Integrações externas: SSO Institucional (OAuth2/SAML - Google Workspace e Entra ID) e Cartografia (Google Maps).
+  
+  Entidades Principais do Domínio:
+  - OrganizacaoCliente (B2B, campus ou empresa parceira contratante).
+  - UtilizadorFinal (estudante/colaborador elegível com conta institucional).
+  - EBike (unidade ciber-física com GPS, bateria e tranca inteligente).
+  - Doca (estação física oficial georreferenciada para início e fim de viagens).
+  - Viagem (sessão de utilização entre docas com registo de telemetria e CO2 poupado).
+  - MetricasESG (indicadores consolidados de descarbonização e Âmbito 3).
+  - AlertaManutencao (ordens técnicas para bateria <15%, avarias ou abandono).
+
+rules:
+  proposal:
+    - "Abordagem Model-First: O slice, os fluxos e o valor entregue devem ter origem estrita na SRS E4b-SRS v2.0."
+    - "Rastreabilidade: Identificar claramente o slice com o ID da SRS (ex.: UC-07.S1)."
+  specs:
+    - "Rastreabilidade de IDs: Usar obrigatoriamente os IDs da SRS nos requirements (UC-nn) e nos cenários (CT-nn.k)."
+    - "Sintaxe Formal: Requisitos funcionais com a palavra-chave SHALL e cenários de teste com WHEN e THEN (estilo Gherkin)."
+    - "Origem na SRS: Não inventar requisitos ou cenários que não estejam descritos na SRS."
+  design:
+    - "Conformidade Técnica: Respeitar a arquitetura (Next.js, FastAPI, MQTT com TLS 1.3) e as entidades do Diagrama UML de Domínio."
+  tasks:
+    - "Fase de Especificação: Não aplicar alterações de código nesta iteração (não executar opsx:apply)."
