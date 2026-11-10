@@ -12,6 +12,3 @@ O sistema Uni-Bike SHALL permitir que um utilizador autenticado e elegível (BR-
 - **WHEN** um utilizador autenticado com perfil ativo e sem viagens em curso lê o código QR de uma e-bike funcional ancorada numa doca com bateria > 20%
 - **THEN** o fecho inteligente abre em menos de 3 segundos (RNF-01), o estado da e-bike transita para «Em Viagem», a viagem é iniciada e a app exibe o ecrã de viagem ativa
 
-#### Scenario: CT-01.3 Recusa de desbloqueio por bateria insuficiente
-- **WHEN** o utilizador efetua a leitura do código QR de uma e-bike cuja carga de bateria reportada seja inferior a 20%
-- **THEN** o sistema recusa o comando de abertura, mantém o fecho trancado e a app exibe aviso de bateria insuficiente, sugerindo a e-bike com carga mais próxima (BR-05)
