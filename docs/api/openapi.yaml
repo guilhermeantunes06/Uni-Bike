@@ -11,17 +11,17 @@ paths:
     get:
       summary: Verifica o estado do sistema e ligação à base de dados
       tags:
-        - Sistema & Frota
+        - system
       responses:
         '200':
           description: Sistema operacional
 
-  /api/auth/sso:
+  /api/auth/sso/login:
     post:
       summary: Autenticação institucional federada (UC-07.S1)
-      description: Valida o email institucional via simulador SSO e verifica contrato ativo da organização (BR-02).
+      description: Valida o token/credencial institucional SSO e emite o token de sessão JWT (BR-02, RNF-06).
       tags:
-        - Autenticação
+        - auth
       requestBody:
         required: true
         content:
@@ -39,12 +39,43 @@ paths:
         '403':
           description: Organização inativa ou domínio não autorizado
 
-  /api/rides/unlock:
+  /api/auth/me:
+    get:
+      summary: Obtém perfil e estado da conta do utilizador autenticado (UC-07.S1)
+      tags:
+        - auth
+      responses:
+        '200':
+          description: Perfil e elegibilidade do utilizador
+        '401':
+          description: Sessão inválida ou expirada
+
+  /api/docas:
+    get:
+      summary: Lista as docas oficiais com coordenadas GPS, capacidade e e-bikes disponíveis (UC-01.S1)
+      tags:
+        - docas
+      responses:
+        '200':
+          description: Lista de docas oficiais
+
+  /api/ebikes:
+    get:
+      summary: Consulta a frota e o estado operacional/bateria de cada bicicleta (UC-06.S1)
+      tags:
+        - ebikes
+      responses:
+        '200':
+          description: Lista de e-bikes registadas
+
+  /api/viagens/unlock:
     post:
       summary: Destrancar e-bike por QR Code e iniciar viagem (UC-01.S1)
-      description: Valida utilizador ativo (BR-02), bateria >20% (BR-05), ausência de viagem em curso (BR-06) e envia comando IoT.
+      description: >
+        Valida elegibilidade (BR-02), horário de funcionamento (BR-01), bateria > 20% (BR-05)
+        e ausência de viagem concorrente (BR-06), destranca a e-bike via adaptador IoT e inicia a viagem.
       tags:
-        - Viagens
+        - viagens
       requestBody:
         required: true
         content:
@@ -61,16 +92,27 @@ paths:
         '201':
           description: e-Bike destrancada e viagem iniciada
         '400':
-          description: Regra de negócio violada (bateria insuficiente, utilizador com viagem ativa ou bicicleta indisponível)
+          description: Regra de negócio violada (bateria <= 20%, fora de horário, utilizador com viagem ativa ou bicicleta indisponível)
 
-  /api/rides/{viagem_id}/lock:
+  /api/viagens/ativa:
+    get:
+      summary: Obtém os dados em tempo real da viagem em curso do utilizador autenticado (UC-04.S1)
+      tags:
+        - viagens
+      responses:
+        '200':
+          description: Dados da viagem ativa
+        '404':
+          description: Utilizador sem viagem ativa no momento
+
+  /api/viagens/{id}/lock:
     post:
       summary: Encerrar viagem e trancar e-bike em doca oficial (UC-04.S1)
-      description: Valida geofence da doca de destino (BR-04), calcula distância e CO2 poupado (BR-03) e fecha a viagem.
+      description: Valida estacionamento na doca via geofence (BR-04), bloqueia a tranca e calcula distância e CO2 poupado (BR-03).
       tags:
-        - Viagens
+        - viagens
       parameters:
-        - name: viagem_id
+        - name: id
           in: path
           required: true
           schema:
@@ -95,12 +137,12 @@ paths:
         '400':
           description: Bicicleta fora do geofence da doca oficial
 
-  /api/telemetry:
+  /api/telemetria:
     post:
-      summary: Registar evento de telemetria IoT da e-bike (UC-06.S1)
-      description: Atualiza bateria, posição GPS e timestamp de heartbeat da bicicleta.
+      summary: Receber pacotes de telemetria IoT da e-bike (UC-06.S1)
+      description: Atualiza coordenadas GPS, percentagem de bateria, heartbeat e gera alerta se bateria < 15% (BR-05).
       tags:
-        - Frota & Telemetria
+        - telemetria
       requestBody:
         required: true
         content:
@@ -121,21 +163,21 @@ paths:
         '200':
           description: Telemetria processada
 
-  /api/bikes:
+  /api/telemetria/live:
     get:
-      summary: Listar estado e bateria da frota de e-bikes (UC-06.S1)
+      summary: Fornece os últimos registos de posição e carga da frota para a consola operacional (UC-06.S1)
       tags:
-        - Frota & Telemetria
+        - telemetria
       responses:
         '200':
-          description: Lista de e-bikes registadas
+          description: Estado atualizado da frota e alertas de bateria/conectividade
 
   /api/esg/dashboard:
     get:
       summary: Consultar métricas ESG agregadas da organização (UC-08.S1)
-      description: Devolve totais anónimos de viagens, distância e CO2 poupado (BR-03).
+      description: Calcula e devolve indicadores anónimos de km percorridos e CO2 evitado por período (BR-03).
       tags:
-        - Métricas ESG
+        - esg
       parameters:
         - name: organizacao_id
           in: query
@@ -145,3 +187,35 @@ paths:
       responses:
         '200':
           description: Indicadores ESG consolidados
+
+  /api/esg/export:
+    get:
+      summary: Exportar relatório consolidado de sustentabilidade em PDF ou CSV (UC-08.S1)
+      tags:
+        - esg
+      parameters:
+        - name: organizacao_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: formato
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pdf, csv]
+            default: csv
+      responses:
+        '200':
+          description: Ficheiro de relatório gerado em < 5s (RNF-04)
+
+  /api/test/reset:
+    post:
+      summary: Repõe a base de dados SQLite para o estado inicial antes dos testes Playwright (RT-01)
+      description: Disponível apenas em ambiente de teste para garantir determinismo E2E.
+      tags:
+        - test-utils
+      responses:
+        '200':
+          description: Base de dados reposta para o estado inicial

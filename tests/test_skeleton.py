@@ -28,8 +28,8 @@ def test_health_endpoint_traverses_all_layers(client: TestClient) -> None:
 
 
 def test_list_bikes_returns_seeded_fleet(client: TestClient) -> None:
-    """Verifica que GET /api/bikes devolve a bicicleta inicial persistida em SQLite."""
-    response = client.get("/api/bikes")
+    """Verifica que GET /api/ebikes devolve a bicicleta inicial persistida em SQLite."""
+    response = client.get("/api/ebikes")
     assert response.status_code == 200
     bikes = response.json()
     assert len(bikes) == 1

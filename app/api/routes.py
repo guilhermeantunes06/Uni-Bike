@@ -16,7 +16,7 @@ def health_check(conn: sqlite3.Connection = Depends(get_db)) -> dict[str, object
     return service.get_system_status()
 
 
-@router.get("/bikes")
+@router.get("/ebikes")
 def list_bikes(conn: sqlite3.Connection = Depends(get_db)) -> list[dict[str, object]]:
     """Lista todas as e-bikes registadas na frota."""
     service = SystemHealthService(conn)
