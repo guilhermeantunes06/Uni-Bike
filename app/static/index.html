@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni-Bike — Mobilidade Partilhada</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 820px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+        header {
+            border-bottom: 2px solid #10b981;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        h1 { margin: 0; color: #065f46; }
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #d1fae5;
+            color: #065f46;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+        th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #e5e7eb; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 data-testid="app-title">Uni-Bike</h1>
+        <p>Plataforma de Gestão de Frotas de e-Bikes (1.º Incremento)</p>
+    </header>
+
+    <section class="card">
+        <h2>Estado do Sistema</h2>
+        <p>Estado API &amp; Base de Dados: <span id="system-status" class="badge" data-testid="system-status">A carregar...</span></p>
+    </section>
+
+    <section class="card">
+        <h2>Frota Disponível</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>QR Code</th>
+                    <th>Estado</th>
+                    <th>Bateria</th>
+                    <th>Doca</th>
+                </tr>
+            </thead>
+            <tbody id="bikes-list" data-testid="bikes-list">
+                <tr><td colspan="5">A carregar frota...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        async function loadStatus() {
+            try {
+                const healthRes = await fetch('/api/health');
+                const health = await healthRes.json();
+                const statusEl = document.getElementById('system-status');
+                statusEl.textContent = `${health.status.toUpperCase()} (${health.database})`;
+
+                const bikesRes = await fetch('/api/bikes');
+                const bikes = await bikesRes.json();
+                const tbody = document.getElementById('bikes-list');
+                tbody.innerHTML = bikes.map(b => `
+                    <tr data-testid="bike-row-${b.id}">
+                        <td>${b.id}</td>
+                        <td>${b.qr_code}</td>
+                        <td>${b.estado}</td>
+                        <td>${b.bateria_pct}%</td>
+                        <td>${b.doca_id || '-'}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                document.getElementById('system-status').textContent = 'ERRO';
+            }
+        }
+        loadStatus();
+    </script>
+</body>
+</html>

@@ -36,13 +36,14 @@ schema: spec-driven
 context: |
   O Uni-Bike é uma plataforma ciber-física integrada B2B para gestão partilhada de frotas de
   bicicletas elétricas (e-bikes) em campus universitários e parques tecnológicos.
+  Fonte de requisitos: E4b-SRS v2.0 (assets/E4b-SRS/E4b-SRS.pdf).
   
-  Arquitetura e Restrições Técnicas:
-  - Aplicação Móvel para utilizador final (Android/iOS cross-platform).
-  - Consola Web de gestão operacional e analítica em React/Next.js.
-  - Backend na Cloud com arquitetura de serviços/APIs RESTful seguras (HTTPS/TLS 1.3).
-  - Camada IoT ciber-física: módulos IoT com GPS nas e-bikes comunicando via MQTT com TLS.
-  - Integrações externas: SSO Institucional (OAuth2/SAML - Google Workspace e Entra ID) e Cartografia (Google Maps).
+  Arquitetura (E5-Desenho) e Decisões:
+  - Arquitetura: docs/design/E5-Desenho.md. Módulos: UI Web (app/static), API REST (app/api), Lógica de Domínio (app/domain), Infraestrutura/Persistência e Simuladores (app/infrastructure).
+  - Decisões: docs/adr/ (ADR-001 stack: Python 3.14, FastAPI, SQLite, HTML/CSS/JS testável com Playwright, executor de testes pytest).
+  - Contrato da API: docs/api/openapi.yaml. Não criar endpoints fora do contrato.
+  - Integrações externas (IoT MQTT/tranca, SSO institucional OAuth2/OIDC) através de adaptadores, com simulador para o 1.º incremento.
+  - A aplicação web deve expor seletores estáveis (data-testid) para suportar testes com Playwright.
   
   Entidades Principais do Domínio:
   - OrganizacaoCliente (B2B, campus ou empresa parceira contratante).
@@ -62,6 +63,9 @@ rules:
     - "Sintaxe Formal: Requisitos funcionais com a palavra-chave SHALL e cenários de teste com WHEN e THEN (estilo Gherkin)."
     - "Origem na SRS: Não inventar requisitos ou cenários que não estejam descritos na SRS."
   design:
-    - "Conformidade Técnica: Respeitar a arquitetura (Next.js, FastAPI, MQTT com TLS 1.3) e as entidades do Diagrama UML de Domínio."
+    - "Indicar os módulos afetados (E5 2.3: app/static, app/api, app/domain, app/infrastructure) e os endpoints afetados."
+    - "Referir os ADR aplicáveis (ex.: ADR-001); um desvio à arquitetura exige um ADR novo."
   tasks:
-    - "Fase de Especificação: Não aplicar alterações de código nesta iteração (não executar opsx:apply)."
+    - "Incluir uma tarefa de teste automático por cada scenario definido nas specs."
+    - "O nome de cada teste começa pelo ID do caso de teste (ex.: test_ct_01_1_...)."
+    - "Os testes do slice passam antes do arquivo (/opsx:archive)."

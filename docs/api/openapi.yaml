@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: Uni-Bike API
+  version: 0.1.0
+  description: >
+    Contrato da interface de serviços REST do sistema Uni-Bike para o 1.º incremento (Épico 1).
+    Mapeia os fluxos dos slices UC-07.S1, UC-01.S1, UC-04.S1, UC-06.S1 e UC-08.S1.
+
+paths:
+  /api/health:
+    get:
+      summary: Verifica o estado do sistema e ligação à base de dados
+      tags:
+        - Sistema & Frota
+      responses:
+        '200':
+          description: Sistema operacional
+
+  /api/auth/sso:
+    post:
+      summary: Autenticação institucional federada (UC-07.S1)
+      description: Valida o email institucional via simulador SSO e verifica contrato ativo da organização (BR-02).
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  example: aluno@ua.pt
+      responses:
+        '200':
+          description: Autenticação bem-sucedida com token JWT
+        '403':
+          description: Organização inativa ou domínio não autorizado
+
+  /api/rides/unlock:
+    post:
+      summary: Destrancar e-bike por QR Code e iniciar viagem (UC-01.S1)
+      description: Valida utilizador ativo (BR-02), bateria >20% (BR-05), ausência de viagem em curso (BR-06) e envia comando IoT.
+      tags:
+        - Viagens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [utilizador_id, qr_code]
+              properties:
+                utilizador_id:
+                  type: string
+                qr_code:
+                  type: string
+      responses:
+        '201':
+          description: e-Bike destrancada e viagem iniciada
+        '400':
+          description: Regra de negócio violada (bateria insuficiente, utilizador com viagem ativa ou bicicleta indisponível)
+
+  /api/rides/{viagem_id}/lock:
+    post:
+      summary: Encerrar viagem e trancar e-bike em doca oficial (UC-04.S1)
+      description: Valida geofence da doca de destino (BR-04), calcula distância e CO2 poupado (BR-03) e fecha a viagem.
+      tags:
+        - Viagens
+      parameters:
+        - name: viagem_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [doca_destino_id, latitude, longitude]
+              properties:
+                doca_destino_id:
+                  type: string
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+      responses:
+        '200':
+          description: Viagem encerrada com sucesso
+        '400':
+          description: Bicicleta fora do geofence da doca oficial
+
+  /api/telemetry:
+    post:
+      summary: Registar evento de telemetria IoT da e-bike (UC-06.S1)
+      description: Atualiza bateria, posição GPS e timestamp de heartbeat da bicicleta.
+      tags:
+        - Frota & Telemetria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ebike_id, bateria_pct, latitude, longitude]
+              properties:
+                ebike_id:
+                  type: string
+                bateria_pct:
+                  type: integer
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+      responses:
+        '200':
+          description: Telemetria processada
+
+  /api/bikes:
+    get:
+      summary: Listar estado e bateria da frota de e-bikes (UC-06.S1)
+      tags:
+        - Frota & Telemetria
+      responses:
+        '200':
+          description: Lista de e-bikes registadas
+
+  /api/esg/dashboard:
+    get:
+      summary: Consultar métricas ESG agregadas da organização (UC-08.S1)
+      description: Devolve totais anónimos de viagens, distância e CO2 poupado (BR-03).
+      tags:
+        - Métricas ESG
+      parameters:
+        - name: organizacao_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Indicadores ESG consolidados
